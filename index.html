@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1f6f5c">
+<title>เก็บเงินสาขา · ปี 1–4 เทอม 1–2</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+:root{
+  --bg:#f3f6f4;--card:#fff;--ink:#1d2b26;--mute:#6b7a73;--line:#dbe4df;
+  --main:#1f6f5c;--ok:#1f6f5c;--warn:#c2410c;--over:#1d4ed8;
+  --card-pad:16px;--card-gap:16px;--item-pad:13px;--big-sz:2.1rem
+}
+@media(prefers-color-scheme:dark){
+  :root[data-theme="auto"]{
+    --bg:#121816;--card:#1b2420;--ink:#e8f0ec;--mute:#93a39b;--line:#2c3933;
+    --main:#4cc2a1;--ok:#4cc2a1;--warn:#fb923c;--over:#7aa2ff
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f3f6f4;--card:#fff;--ink:#1d2b26;--mute:#6b7a73;--line:#dbe4df;
+  --main:#1f6f5c;--ok:#1f6f5c;--warn:#c2410c;--over:#1d4ed8
+}
+:root[data-theme="dark"]{
+  --bg:#121816;--card:#1b2420;--ink:#e8f0ec;--mute:#93a39b;--line:#2c3933;
+  --main:#4cc2a1;--ok:#4cc2a1;--warn:#fb923c;--over:#7aa2ff
+}
+:root[data-theme="warm"]{
+  --bg:#f7f1e8;--card:#fffaf3;--ink:#2d221a;--mute:#7a6757;--line:#e6d8c5;
+  --main:#9c5221;--ok:#2e7d5b;--warn:#c2410c;--over:#1d4ed8
+}
+:root[data-layout="compact"]{
+  --card-pad:12px;--card-gap:10px;--item-pad:9px;--big-sz:1.75rem
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sarabun',system-ui,sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:24px 16px 64px}
+.head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+h1{font-size:1.9rem;font-weight:800;margin:0 0 4px}
+.sub{color:var(--mute);margin:0}
+.ui-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:var(--card-pad);margin-bottom:var(--card-gap)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+label{display:block;font-size:.85rem;color:var(--mute);margin-bottom:4px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 11px;width:100%}
+.ui-bar select{width:auto;padding:7px 10px;font-size:.88rem;cursor:pointer}
+input[type="file"]{padding:7px 9px;font-size:.88rem}
+input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--main);outline-offset:1px}
+.f{flex:1;min-width:140px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 14px;white-space:nowrap}
+button.p{background:var(--main);border-color:var(--main);color:#fff;font-weight:600}
+button.install{background:var(--main);border-color:var(--main);color:#fff;font-weight:600;padding:8px 13px;font-size:.9rem}
+button:disabled{opacity:.45;cursor:not-allowed}
+.mnav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mnav b{font-size:1.25rem}
+.big{font-size:var(--big-sz);font-weight:800;line-height:1.1}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:12px 0 6px}
+.bar i{display:block;height:100%;background:var(--main);transition:width .3s}
+.stats{display:flex;gap:16px 24px;flex-wrap:wrap;color:var(--mute);font-size:.92rem}
+.stats b{color:var(--ink)}
+.item{padding:var(--item-pad) 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.nm{flex:1;min-width:0}
+.nm strong{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:1.06rem}
+.nm strong .rank{font-size:.78rem;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.nm .sum-line,.nm .rk{display:block;font-size:.88rem;color:var(--mute);margin-top:2px}
+:root[data-layout="compact"] .nm .rk{display:none}
+.meta-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}
+:root[data-layout="compact"] .meta-row{margin-top:5px}
+.tag{font-size:.8rem;font-weight:600;padding:2px 10px;border-radius:99px;border:1px solid currentColor;max-width:100%}
+.t-ok{color:var(--ok)}.t-warn{color:var(--warn)}.t-over{color:var(--over)}
+.acts{display:flex;gap:6px;flex:0 0 auto}
+.acts button{padding:6px 11px;font-size:.86rem}
+details{margin-top:8px}
+summary{cursor:pointer;color:var(--mute);font-size:.88rem}
+.h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;font-size:.92rem;border-bottom:1px dashed var(--line)}
+.h:last-child{border-bottom:0}
+.h .d{flex:1;min-width:110px;color:var(--mute)}
+.h button{padding:3px 9px;font-size:.8rem}
+.slip-thumb{width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid var(--line);cursor:pointer;flex:0 0 auto}
+.nohist{color:var(--mute);font-size:.88rem;padding:6px 0}
+.empty{color:var(--mute);text-align:center;padding:20px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--mute);font-size:.85rem}
+.ocr-hint{font-size:.82rem;color:var(--main);margin-top:4px;min-height:1.2em}
+.req{color:var(--warn);font-weight:600}
+
+@media (max-width:520px){
+  main{padding:16px 12px 64px}
+  h1{font-size:1.6rem}
+  .big{font-size:1.85rem}
+  .card{padding:14px}
+  .meta-row{flex-direction:column;align-items:flex-start;gap:6px}
+}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;width:100%;max-width:420px;box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.modal-box h3{margin:0 0 12px;font-size:1.15rem}
+.modal-field{margin-bottom:12px}
+.preview-box{margin-top:8px;display:none}
+.preview-box img{max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line);display:block}
+.modal-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+
+.lb-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;z-index:60}
+.lb-bg.open{display:flex}
+.lb-bg img{max-width:95vw;max-height:90vh;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+
+.toast-wrap{position:fixed;top:16px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:80;max-width:min(360px,calc(100vw - 32px))}
+.toast{background:var(--card);border:1px solid var(--main);border-left:5px solid var(--main);border-radius:10px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.9rem;animation:fadeIn .2s ease}
+.toast b{display:block;color:var(--main);margin-bottom:2px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+<main>
+  <div class="head-top">
+    <div>
+      <h1>เก็บเงินสาขา</h1>
+      <p class="sub">p_01(ช่วงพัฒนา)</p>
+    </div>
+    <button class="install" id="installBtn" type="button" style="display:none">📲 ติดตั้งแอป</button>
+  </div>
+
+  <div class="ui-bar">
+    <select id="themeSel" aria-label="เลือกธีมสี">
+      <option value="auto">🎨 ธีม: อัตโนมัติ</option>
+      <option value="dark">🌙 ธีม: มืด</option>
+      <option value="light">☀️ ธีม: สว่าง</option>
+      <option value="warm">☕ ธีม: โทนอุ่น</option>
+    </select>
+    <select id="layoutSel" aria-label="เลือกรูปแบบการจัดวาง">
+      <option value="comfortable">📐 ระยะห่าง: สบายตา</option>
+      <option value="compact">📋 ระยะห่าง: กะทัดรัด</option>
+    </select>
+  </div>
+
+  <section class="card">
+    <div class="mnav">
+      <button id="prev" type="button" aria-label="เทอมก่อนหน้า">◀</button>
+      <b id="mlabel">ปี 1 เทอม 1</b>
+      <button id="next" type="button" aria-label="เทอมถัดไป">▶</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="f"><label for="rent">ยอดต่อคน (บาท) ของเทอมนี้</label><input id="rent" type="number" min="0" value="775"></div>
+      <div class="f">
+        <label for="termSel">เลือกชั้นปี / เทอม</label>
+        <select id="termSel">
+          <option value="Y1-T1">ปี 1 เทอม 1</option>
+          <option value="Y1-T2">ปี 1 เทอม 2</option>
+          <option value="Y2-T1">ปี 2 เทอม 1</option>
+          <option value="Y2-T2">ปี 2 เทอม 2</option>
+          <option value="Y3-T1">ปี 3 เทอม 1</option>
+          <option value="Y3-T2">ปี 3 เทอม 2</option>
+          <option value="Y4-T1">ปี 4 เทอม 1</option>
+          <option value="Y4-T2">ปี 4 เทอม 2</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="stats"><span>เก็บได้แล้ว</span></div>
+    <div class="big" id="got">0 บาท</div>
+    <div class="bar"><i id="fill" style="width:0"></i></div>
+    <div class="stats">
+      <span>ยอดที่ต้องเก็บ <b id="need">13,950</b></span>
+      <span>ค้างอีก <b id="left">13,950</b></span>
+      <span>ยกมาจากเทอมก่อน <b id="carry">0</b></span>
+      <span>จ่ายครบ <b id="done">0/18</b> คน</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <div class="f" style="flex:2"><label for="name">ชื่อ-สกุล และรหัสนักศึกษา</label><input id="name" placeholder="เช่น สมชาย ใจดี 694245099"></div>
+      <div class="f">
+        <label for="amt">จ่ายมาแล้ว (บาท)</label>
+        <input id="amt" type="number" min="0" step="any" value="0">
+        <div class="ocr-hint" id="addOcrHint"></div>
+      </div>
+      <div class="f" style="flex:1.6"><label for="addSlip">แนบรูปสลิป (บังคับถ้ามียอดจ่าย)</label><input id="addSlip" type="file" accept="image/*"></div>
+      <button class="p" id="add" type="button">เพิ่มคน</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div style="margin-bottom:12px">
+      <input id="searchBox" placeholder="🔍 ค้นหาชื่อ หรือ รหัสนักศึกษา...">
+    </div>
+    <div id="list"></div>
+  </section>
+
+  <div class="foot">
+    <span id="status"></span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button id="syncBtn" type="button">🔄 ซิงก์ตอนนี้</button>
+      <button id="soundBtn" type="button">🔔 เสียงเตือน: เปิด</button>
+      <button id="reset" type="button">ล้างยอดเทอมนี้</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal-bg" id="payModal" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+  <div class="modal-box">
+    <h3 id="payTitle">บันทึกการจ่ายเงิน</h3>
+    <div class="modal-field">
+      <label for="payAmt">ยอดที่จ่ายเพิ่ม (บาท)</label>
+      <input id="payAmt" type="number" min="0" step="any">
+      <div class="ocr-hint" id="payOcrHint"></div>
+    </div>
+    <div class="modal-field">
+      <label for="paySlip">แนบรูปสลิป / หลักฐาน <span class="req">*จำเป็นต้องแนบสลิป</span></label>
+      <input id="paySlip" type="file" accept="image/*">
+      <div class="preview-box" id="payPreviewBox">
+        <img id="payPreviewImg" alt="ตัวอย่างรูปสลิป">
+      </div>
+    </div>
+    <div class="modal-acts">
+      <button id="payCancel" type="button">ยกเลิก</button>
+      <button class="p" id="paySave" type="button">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="lb-bg" id="lightbox" title="คลิกเพื่อปิด">
+  <img id="lightboxImg" alt="รูปสลิปขนาดเต็ม">
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const KEY = 'term-tracker-v2';
+  const UI_PREF_KEY = 'term-tracker-ui-pref-v2';
+  const DB_URL = 'https://money-6f16c-default-rtdb.asia-southeast1.firebasedatabase.app';
+  const DB_PATH = '/term1.json';
+
+  const TERMS = [
+    { id: 'Y1-T1', label: 'ปี 1 เทอม 1' },
+    { id: 'Y1-T2', label: 'ปี 1 เทอม 2' },
+    { id: 'Y2-T1', label: 'ปี 2 เทอม 1' },
+    { id: 'Y2-T2', label: 'ปี 2 เทอม 2' },
+    { id: 'Y3-T1', label: 'ปี 3 เทอม 1' },
+    { id: 'Y3-T2', label: 'ปี 3 เทอม 2' },
+    { id: 'Y4-T1', label: 'ปี 4 เทอม 1' },
+    { id: 'Y4-T2', label: 'ปี 4 เทอม 2' },
+  ];
+  const TERM_IDS = TERMS.map(t => t.id);
+  const termLabelTH = id => (TERMS.find(t => t.id === id) || TERMS[0]).label;
+
+  const DEFAULT_PEOPLE = [
+    { id: '694245001', name: 'กฤติพงศ์ จันทรโคตร 694245001' },
+    { id: '694245002', name: 'ชยานันท์ เฟื่องนคร 694245002' },
+    { id: '694245003', name: 'ณรงค์ฤทธิ์ อาจองค์ 694245003' },
+    { id: '694245004', name: 'ทรงพล สมตน 694245004' },
+    { id: '694245006', name: 'ธรรมนูญ ศรีพนมวรรณ 694245006' },
+    { id: '694245008', name: 'ภูตะวัน จันทร์ศรีทอง 694245008' },
+    { id: '694245009', name: 'วศิน คําธัญญา 694245009' },
+    { id: '694245010', name: 'วัชรเกียรติ สนธิเดชกุล 694245010' },
+    { id: '694245011', name: 'วันชนะ สิงห์ชมภู 694245011' },
+    { id: '694245012', name: 'ศักรินทร์ เอมอาจ 694245012' },
+    { id: '694245013', name: 'ศุภณัฐ บุญศิริ 694245013' },
+    { id: '694245014', name: 'ศุภสิน ทรงเจริญ 694245014' },
+    { id: '694245015', name: 'อัฟฮัม อินทโช 694245015' },
+    { id: '694245017', name: 'มนัศนันท์ ชินอักษร 694245017' },
+    { id: '694245018', name: 'สุภัสสรา เจ๊กนาม 694245018' },
+    { id: '694245019', name: 'อนันทนาภร ต่อเชื้อ 694245019' },
+    { id: '694245020', name: 'นภัสรพี อวยศิริ 694245020' },
+    { id: '694245021', name: 'ยองอู ชอย 694245021' },
+  ];
+
+  const RANKS = [
+    { min: 0,   name: 'ยังไม่มียศ', icon: '🌱', color: '#6b7a73' },
+    { min: 100, name: 'ยาจก',      icon: '🥀', color: '#78716c' },
+    { min: 250, name: 'ชาวบ้าน',    icon: '🏠', color: '#2e8b57' },
+    { min: 350, name: 'ขอทาน',     icon: '🪙', color: '#92400e' },
+    { min: 450, name: 'ดัชเชส',     icon: '🎀', color: '#db2777' },
+    { min: 550, name: 'ดยุก',      icon: '💎', color: '#2563eb' },
+    { min: 650, name: 'ราชินี',     icon: '👸', color: '#9333ea' },
+    { min: 775, name: 'ราชา',      icon: '👑', color: '#d97706' },
+  ];
+
+  let state = { rent: 775, rents: {}, term: 'Y1-T1', people: DEFAULT_PEOPLE.map(p => ({ ...p })), pay: {} };
+  const openDetails = new Set();
+  let pendingPayUserId = null;
+  let pendingPayImg = '';
+  let pendingAddSlipImg = '';
+  let soundEnabled = true;
+  let initializedStream = false;
+  let dirty = 0;
+
+  function applyUIPrefs(pref){
+    const theme = (pref && pref.theme) || 'auto';
+    const layout = (pref && pref.layout) || 'comfortable';
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-layout', layout);
+    $('themeSel').value = theme;
+    $('layoutSel').value = layout;
+    try { localStorage.setItem(UI_PREF_KEY, JSON.stringify({ theme, layout })); } catch(e){}
+  }
+
+  function initPWA(){
+    try {
+      const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#1f6f5c"/><text x="96" y="122" font-size="84" text-anchor="middle" fill="#ffffff">🎓</text></svg>';
+      const iconUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(iconSvg)));
+      const manifest = {
+        name: 'เก็บเงินสาขา ปี 1-4',
+        short_name: 'เก็บเงินสาขา',
+        start_url: './',
+        scope: './',
+        display: 'standalone',
+        background_color: '#121816',
+        theme_color: '#1f6f5c',
+        icons: [{ src: iconUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' }]
+      };
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+      document.head.appendChild(link);
+
+      if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){
+        const sw = "const C='term-pwa-v2';self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.hostname.includes('firebasedatabase.app'))return;e.respondWith(fetch(e.request).then(r=>{if(r&&r.status===200&&u.origin===location.origin){const cp=r.clone();caches.open(C).then(c=>c.put(e.request,cp));}return r;}).catch(()=>caches.match(e.request)));});";
+        navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw], { type: 'application/javascript' }))).catch(() => {});
+      }
+    } catch(e){}
+  }
+
+  let deferredInstallPrompt = null;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    $('installBtn').style.display = 'inline-block';
+  });
+  $('installBtn').addEventListener('click', async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    $('installBtn').style.display = 'none';
+  });
+
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  const fmt = n => Number(n || 0).toLocaleString('th-TH');
+  const fdate = t => new Date(t).toLocaleString('th-TH', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+  const setStatus = t => { $('status').textContent = t; };
+
+  function personScore(id){
+    let s = 0;
+    Object.values(state.pay || {}).forEach(byId => {
+      const paid = (((byId || {})[id]) || []).reduce((t, x) => t + (Number(x && x.a) || 0), 0);
+      s += paid;
+    });
+    return s;
+  }
+  function rankOf(score){
+    let i = 0;
+    RANKS.forEach((r, k) => { if (score >= r.min) i = k; });
+    return { cur: RANKS[i], next: RANKS[i+1] || null };
+  }
+
+  function playBeep(){
+    if (!soundEnabled) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(784, ctx.currentTime);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.26);
+    } catch(e){}
+  }
+
+  function showToast(title, body){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<b></b><span></span>';
+    el.querySelector('b').textContent = title;
+    el.querySelector('span').textContent = body;
+    $('toasts').appendChild(el);
+    playBeep();
+    setTimeout(() => el.remove(), 6500);
+  }
+
+  function compressImage(file, maxWidth = 600, quality = 0.65){
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve('');
+      if (file.type && !file.type.startsWith('image/')) return reject(new Error('กรุณาเลือกไฟล์รูปภาพ'));
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('อ่านไฟล์รูปไม่สำเร็จ'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('โหลดรูปไม่สำเร็จ'));
+        img.onload = () => {
+          let w = img.width || maxWidth, h = img.height || maxWidth;
+          if (w > maxWidth){
+            h = Math.round(h * (maxWidth / w));
+            w = maxWidth;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function extractAmountFromText(rawText){
+    if (!rawText) return null;
+    const cleaned = rawText
+      .replace(/บาท|THB|฿|จำนวนเงิน|ยอดโอน|ยอดเงิน/gi, ' ')
+      .replace(/O(?=\d)/g, '0')
+      .replace(/(?<=\d)O/g, '0');
+    const matches = [...cleaned.matchAll(/\b(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?\b/g)];
+    const candidates = [];
+    for (const m of matches){
+      const intPart = Number(m[1].replace(/,/g, ''));
+      const decPart = m[2] ? Number('0.' + m[2]) : 0;
+      const val = intPart + decPart;
+      if (val > 0 && val < 1000000){
+        const isPlainYear = !m[1].includes(',') && !m[2] && val >= 2500 && val <= 2575;
+        candidates.push({ val, isPlainYear, hasDecimalOrComma: Boolean(m[2] || m[1].includes(',')) });
+      }
+    }
+    if (!candidates.length) return null;
+    const filtered = candidates.filter(c => !c.isPlainYear);
+    const pool = filtered.length ? filtered : candidates;
+    const decimalPool = pool.filter(c => c.hasDecimalOrComma);
+    const best = (decimalPool.length ? decimalPool : pool).sort((a, b) => b.val - a.val)[0];
+    return Number.isInteger(best.val) ? best.val : Number(best.val.toFixed(2));
+  }
+
+  async function readSlipAmount(dataUrl, hintEl, amtInput){
+    if (!window.Tesseract || !dataUrl) return;
+    hintEl.textContent = 'กำลังอ่านยอดเงินจากสลิป...';
+    try {
+      const res = await window.Tesseract.recognize(dataUrl, 'tha+eng');
+      const txt = (res && res.data && res.data.text) || '';
+      const amount = extractAmountFromText(txt);
+      if (amount !== null && amount > 0){
+        amtInput.value = amount;
+        hintEl.textContent = 'อ่านยอดจากสลิปได้ ' + fmt(amount) + ' บาท (แก้ได้)';
+      } else {
+        hintEl.textContent = 'อ่านยอดอัตโนมัติไม่ชัด กรุณากรอกยอดเงินเอง';
+      }
+    } catch(e){
+      hintEl.textContent = 'อ่านสลิปไม่สำเร็จ กรุณากรอกยอดเงินเอง';
+    }
+  }
+
+  function openLightbox(src){
+    if (!src) return;
+    $('lightboxImg').src = src;
+    $('lightbox').classList.add('open');
+  }
+  $('lightbox').addEventListener('click', () => $('lightbox').classList.remove('open'));
+
+  function normalize(s){
+    s = (s && typeof s === 'object') ? s : {};
+    const out = {
+      rent: Number(s.rent) || 775,
+      rents: (s.rents && typeof s.rents === 'object') ? s.rents : {},
+      term: TERM_IDS.includes(s.term) ? s.term : 'Y1-T1',
+      people: [],
+      pay: {}
+    };
+    const ppl = Array.isArray(s.people) ? s.people.filter(Boolean) : Object.values(s.people || {}).filter(Boolean);
+    if (ppl.length){
+      ppl.forEach(p => out.people.push({ id: String(p.id || uid()), name: String(p.name || '') }));
+    } else {
+      out.people = DEFAULT_PEOPLE.map(p => ({ ...p }));
+    }
+    Object.entries(s.pay || {}).forEach(([tm, byId]) => {
+      if (!byId || typeof byId !== 'object') return;
+      out.pay[tm] = out.pay[tm] || {};
+      Object.entries(byId).forEach(([id, arr]) => {
+        const list = Array.isArray(arr) ? arr : Object.values(arr || {});
+        out.pay[tm][id] = list.filter(Boolean).map(item => ({
+          a: Number(item && item.a) || 0,
+          t: Number(item && item.t) || Date.now(),
+          ...(item && item.img ? { img: String(item.img) } : {})
+        }));
+      });
+    });
+    return out;
+  }
+
+  function load(){
+    try {
+      const s = localStorage.getItem(KEY);
+      if (s) state = normalize(JSON.parse(s));
+    } catch(e){}
+  }
+
+  function errMsg(e){
+    if (e === 401 || e === 403) return 'Firebase ไม่อนุญาต (' + e + ') ไปตั้ง Rules ให้ read/write เป็น true';
+    if (e === 404) return 'ไม่พบฐานข้อมูล ตรวจลิงก์ DB_URL';
+    return 'ออนไลน์ไม่ได้ (' + ((e && e.message) || e) + ')';
+  }
+
+  function notifyNewPayments(prevState, nextState){
+    if (!initializedStream) return;
+    const pplMap = new Map((nextState.people || []).map(p => [p.id, p.name]));
+    const allTerms = new Set([...Object.keys(prevState.pay || {}), ...Object.keys(nextState.pay || {})]);
+    allTerms.forEach(tm => {
+      const prevById = (prevState.pay && prevState.pay[tm]) || {};
+      const nextById = (nextState.pay && nextState.pay[tm]) || {};
+      const rent = (nextState.rents && nextState.rents[tm] !== undefined) ? nextState.rents[tm] : nextState.rent;
+      Object.entries(nextById).forEach(([id, nextArr]) => {
+        const prevSum = (prevById[id] || []).reduce((s, x) => s + (Number(x && x.a) || 0), 0);
+        const nextSum = (nextArr || []).reduce((s, x) => s + (Number(x && x.a) || 0), 0);
+        if (nextSum > prevSum){
+          const added = nextSum - prevSum;
+          const name = pplMap.get(id) || 'สมาชิก';
+          const fullText = (rent > 0 && nextSum >= rent) ? ' · จ่ายครบเทอมนี้แล้ว!' : '';
+          showToast('มีการจ่ายเงินใหม่ (' + termLabelTH(tm) + ')', name + ' จ่ายเพิ่ม +' + fmt(added) + ' บาท (รวมเทอมนี้ ' + fmt(nextSum) + ' บาท)' + fullText);
+        }
+      });
+    });
+  }
+
+  function applyRemoteData(d){
+    if (!d || d.error) return;
+    const n = normalize(d);
+    n.term = state.term;
+    const prevSnapshot = JSON.parse(JSON.stringify(state));
+    if (JSON.stringify(n) !== JSON.stringify(normalize(state))){
+      notifyNewPayments(prevSnapshot, n);
+      state = n;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+      render();
+    }
+    initializedStream = true;
+  }
+
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch(e){ alert('พื้นที่เก็บข้อมูลในเบราว์เซอร์เต็ม อาจเกิดจากรูปที่แนบมีขนาดใหญ่เกินไป'); }
+    if (!DB_URL) return;
+    dirty++;
+    setStatus('กำลังบันทึกเรียลไทม์...');
+    fetch(DB_URL + DB_PATH, {
+      method: 'PUT',
+      cache: 'no-store',
+      body: JSON.stringify(state)
+    })
+      .then(r => { if (!r.ok) throw r.status; setStatus('เรียลไทม์: บันทึกล่าสุดแล้ว'); })
+      .catch(e => setStatus(errMsg(e)))
+      .finally(() => { dirty = Math.max(0, dirty - 1); });
+  }
+
+  async function pull(force = false){
+    if (!DB_URL || (dirty > 0 && !force)) return;
+    try {
+      const sep = DB_PATH.includes('?') ? '&' : '?';
+      const r = await fetch(DB_URL + DB_PATH + sep + '_t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) throw r.status;
+      const d = await r.json();
+      if (dirty > 0 && !force) return;
+      if (d && !d.error){
+        applyRemoteData(d);
+        render();
+      } else if (!d && state.people.length){
+        initializedStream = true;
+        save();
+        return;
+      } else {
+        initializedStream = true;
+      }
+      const nowTime = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      setStatus('เรียลไทม์ออนไลน์อยู่ · ซิงก์ล่าสุด ' + nowTime);
+    } catch(e){ setStatus(errMsg(e)); }
+  }
+
+  function startRealtimeStream(){
+    if (!DB_URL || typeof EventSource === 'undefined') return;
+    try {
+      const es = new EventSource(DB_URL + DB_PATH);
+      es.addEventListener('put', ev => {
+        if (dirty > 0) return;
+        try {
+          const payload = JSON.parse(ev.data);
+          if (payload.path === '/') applyRemoteData(payload.data);
+          else pull();
+        } catch(e){}
+      });
+      es.addEventListener('patch', () => { if (dirty <= 0) pull(); });
+    } catch(e){}
+  }
+
+  const curRent = () => (state.rents && state.rents[state.term] !== undefined) ? state.rents[state.term] : state.rent;
+  const pays = id => (((state.pay || {})[state.term] || {})[id]) || [];
+  const paidOf = id => pays(id).reduce((s, x) => s + (Number(x && x.a) || 0), 0);
+  const rentOf = tm => (state.rents && state.rents[tm] !== undefined) ? state.rents[tm] : state.rent;
+  const paidIn = (tm, id) => ((((state.pay || {})[tm] || {})[id]) || []).reduce((s, x) => s + (Number(x && x.a) || 0), 0);
+
+  function creditIn(id, termId){
+    const targetIdx = TERM_IDS.indexOf(termId);
+    if (targetIdx <= 0) return 0;
+    let c = 0;
+    for (let i = 0; i < targetIdx; i++){
+      const tm = TERM_IDS[i];
+      const paid = paidIn(tm, id);
+      if (paid > 0 || c > 0) c = Math.max(0, c + paid - rentOf(tm));
+    }
+    return c;
+  }
+  const totalOf = id => paidOf(id) + creditIn(id, state.term);
+
+  function addPay(id, a, img = ''){
+    const tm = state.term;
+    state.rents[tm] = (state.rents[tm] !== undefined) ? state.rents[tm] : state.rent;
+    state.pay[tm] = state.pay[tm] || {};
+    const entry = { a: Number(a) || 0, t: Date.now() };
+    if (img) entry.img = img;
+    (state.pay[tm][id] = state.pay[tm][id] || []).push(entry);
+  }
+
+  function gotoTerm(tm){
+    if (!TERM_IDS.includes(tm)) return;
+    state.term = tm;
+    save();
+    render();
+  }
+  function shift(d){
+    const idx = TERM_IDS.indexOf(state.term);
+    const nextIdx = Math.min(Math.max(idx + d, 0), TERM_IDS.length - 1);
+    if (nextIdx !== idx) gotoTerm(TERM_IDS[nextIdx]);
+  }
+
+  function render(){
+    try {
+      const idx = TERM_IDS.indexOf(state.term);
+      $('mlabel').textContent = termLabelTH(state.term);
+      $('termSel').value = state.term;
+      $('prev').disabled = idx <= 0;
+      $('next').disabled = idx >= TERM_IDS.length - 1;
+      if (document.activeElement !== $('rent')) $('rent').value = curRent();
+
+      const rent = curRent(), ppl = state.people;
+      const got = ppl.reduce((s, p) => s + totalOf(p.id), 0);
+      $('carry').textContent = fmt(ppl.reduce((s, p) => s + creditIn(p.id, state.term), 0));
+      const need = rent * ppl.length;
+      const done = ppl.filter(p => totalOf(p.id) >= rent).length;
+      $('got').textContent = fmt(got) + ' บาท';
+      $('need').textContent = fmt(need);
+      $('left').textContent = fmt(Math.max(need - got, 0));
+      $('done').textContent = done + '/' + ppl.length;
+      $('fill').style.width = need ? Math.min(got / need * 100, 100) + '%' : '0';
+
+      const q = ($('searchBox').value || '').trim().toLowerCase();
+      const filteredPpl = q ? ppl.filter(p => p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q)) : ppl;
+
+      const list = $('list');
+      if (!filteredPpl.length){
+        list.innerHTML = '<div class="empty">' + (q ? 'ไม่พบรายชื่อที่ค้นหา' : 'ยังไม่มีรายชื่อ') + '</div>';
+        return;
+      }
+      list.innerHTML = '';
+      filteredPpl.forEach(p => {
+        const paid = paidOf(p.id), cr = creditIn(p.id, state.term), diff = rent - paid - cr, hist = pays(p.id);
+        const slipCount = hist.filter(x => x && x.img).length;
+        let cls = 't-warn', txt = 'ค้าง ' + fmt(diff) + ' บาท';
+        if (diff === 0){ cls = 't-ok'; txt = 'จ่ายครบ'; }
+        else if (diff < 0){ cls = 't-over'; txt = 'เกิน ' + fmt(-diff) + ' บาท (ยกไปเทอมหน้า)'; }
+
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.innerHTML =
+          '<div class="top">'
+            + '<div class="nm">'
+              + '<strong></strong>'
+              + '<span class="sum-line">จ่ายแล้ว ' + fmt(paid) + (cr ? ' + ยกมา ' + fmt(cr) : '') + ' จาก ' + fmt(rent) + ' บาท</span>'
+            + '</div>'
+            + '<div class="acts">'
+              + '<button type="button" data-a="pay" data-id="' + p.id + '">จ่ายเพิ่ม</button>'
+              + '<button type="button" data-a="del" data-id="' + p.id + '" aria-label="ลบคน">ลบ</button>'
+            + '</div>'
+          + '</div>'
+          + '<div class="meta-row">'
+            + '<span class="tag ' + cls + '">' + txt + '</span>'
+          + '</div>'
+          + '<details' + (openDetails.has(p.id) ? ' open' : '') + ' data-id="' + p.id + '">'
+            + '<summary>ประวัติการจ่าย (' + hist.length + ' ครั้ง' + (slipCount ? ' · มีรูป ' + slipCount : '') + ')</summary>'
+            + '<div class="hl"></div>'
+          + '</details>';
+
+        const sc = personScore(p.id), rk = rankOf(sc);
+        const st = el.querySelector('strong');
+        st.textContent = p.name;
+        const badge = document.createElement('span');
+        badge.className = 'rank';
+        badge.textContent = rk.cur.icon + ' ' + rk.cur.name;
+        badge.style.color = rk.cur.color;
+        st.appendChild(badge);
+
+        const info = document.createElement('span');
+        info.className = 'rk';
+        info.textContent = 'ยอดสะสมรวม ' + fmt(sc) + ' บาท' + (rk.next ? ' · อีก ' + fmt(rk.next.min - sc) + ' บาท ถึงยศ ' + rk.next.name : ' · ยศสูงสุดแล้ว');
+        el.querySelector('.nm').appendChild(info);
+
+        const hl = el.querySelector('.hl');
+        if (!hist.length) hl.innerHTML = '<div class="nohist">ยังไม่มีรายการจ่ายในเทอมนี้</div>';
+        hist.forEach((x, k) => {
+          const r = document.createElement('div');
+          r.className = 'h';
+          r.innerHTML = '<span class="d"></span><b></b>'
+            + (x.img ? '<img class="slip-thumb" alt="สลิปการจ่าย" title="คลิกเพื่อดูรูปเต็ม">' : '')
+            + '<button type="button" data-a="rm" data-id="' + p.id + '" data-k="' + k + '" aria-label="ลบรายการนี้">ลบ</button>';
+          r.querySelector('.d').textContent = fdate(x.t);
+          r.querySelector('b').textContent = '+' + fmt(x.a) + ' บาท';
+          if (x.img){
+            const thumb = r.querySelector('.slip-thumb');
+            thumb.src = x.img;
+            thumb.addEventListener('click', () => openLightbox(x.img));
+          }
+          hl.appendChild(r);
+        });
+        list.appendChild(el);
+      });
+    } catch (err) {
+      console.error(err);
+      setStatus('เกิดข้อผิดพลาดในการแสดงผล: ' + (err && err.message || err));
+    }
+  }
+
+  $('themeSel').addEventListener('change', e => {
+    const cur = JSON.parse(localStorage.getItem(UI_PREF_KEY) || '{}');
+    applyUIPrefs({ ...cur, theme: e.target.value });
+  });
+  $('layoutSel').addEventListener('change', e => {
+    const cur = JSON.parse(localStorage.getItem(UI_PREF_KEY) || '{}');
+    applyUIPrefs({ ...cur, layout: e.target.value });
+  });
+  $('searchBox').addEventListener('input', render);
+
+  $('addSlip').addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file){ pendingAddSlipImg = ''; $('addOcrHint').textContent = ''; return; }
+    compressImage(file).then(img => {
+      pendingAddSlipImg = img;
+      return readSlipAmount(img, $('addOcrHint'), $('amt'));
+    }).catch(err => {
+      alert(err.message || 'แนบรูปไม่สำเร็จ');
+      $('addSlip').value = '';
+      pendingAddSlipImg = '';
+      $('addOcrHint').textContent = '';
+    });
+  });
+
+  function finishAddPerson(name, a, img){
+    const id = uid();
+    state.people.push({ id, name });
+    if (a > 0) addPay(id, a, img);
+    $('name').value = '';
+    $('amt').value = 0;
+    $('addSlip').value = '';
+    $('addOcrHint').textContent = '';
+    pendingAddSlipImg = '';
+    $('name').focus();
+    render();
+    save();
+  }
+
+  $('add').addEventListener('click', () => {
+    const name = $('name').value.trim();
+    if (!name){ $('name').focus(); alert('กรุณาใส่ชื่อก่อนครับ'); return; }
+    const a = Math.max(0, Number($('amt').value) || 0);
+    const file = $('addSlip').files && $('addSlip').files[0];
+    if (a > 0 && !pendingAddSlipImg && !file){
+      alert('บังคับแนบสลิป: กรุณาแนบรูปสลิปหากกรอกยอดจ่ายเริ่มต้นครับ');
+      return;
+    }
+    if (pendingAddSlipImg || !file){ finishAddPerson(name, a, pendingAddSlipImg); return; }
+    setStatus('กำลังย่อรูปสลิป...');
+    compressImage(file).then(img => finishAddPerson(name, a, img)).catch(err => {
+      alert(err.message || 'แนบรูปไม่สำเร็จ');
+      setStatus('แนบรูปไม่สำเร็จ');
+    });
+  });
+  $('name').addEventListener('keydown', e => { if (e.key === 'Enter') $('add').click(); });
+
+  function openPayModal(userId){
+    const p = state.people.find(x => x.id === userId);
+    if (!p) return;
+    pendingPayUserId = userId;
+    pendingPayImg = '';
+    const left = curRent() - totalOf(userId);
+    $('payTitle').textContent = 'บันทึกการจ่ายของ ' + p.name;
+    $('payAmt').value = left > 0 ? left : 0;
+    $('payOcrHint').textContent = '';
+    $('paySlip').value = '';
+    $('payPreviewImg').src = '';
+    $('payPreviewBox').style.display = 'none';
+    $('payModal').classList.add('open');
+    $('payAmt').focus();
+  }
+  function closePayModal(){
+    pendingPayUserId = null;
+    pendingPayImg = '';
+    $('payOcrHint').textContent = '';
+    $('payModal').classList.remove('open');
+  }
+  $('payCancel').addEventListener('click', closePayModal);
+  $('payModal').addEventListener('click', e => { if (e.target === $('payModal')) closePayModal(); });
+  $('paySlip').addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file){ pendingPayImg = ''; $('payOcrHint').textContent = ''; $('payPreviewBox').style.display = 'none'; return; }
+    compressImage(file).then(img => {
+      pendingPayImg = img;
+      $('payPreviewImg').src = img;
+      $('payPreviewBox').style.display = 'block';
+      return readSlipAmount(img, $('payOcrHint'), $('payAmt'));
+    }).catch(err => {
+      alert(err.message || 'แนบรูปไม่สำเร็จ');
+      $('paySlip').value = '';
+      pendingPayImg = '';
+      $('payOcrHint').textContent = '';
+      $('payPreviewBox').style.display = 'none';
+    });
+  });
+  $('paySave').addEventListener('click', () => {
+    if (!pendingPayUserId) return;
+    const n = Math.max(0, Number($('payAmt').value) || 0);
+    if (n <= 0){ alert('กรุณากรอกยอดเงินที่จ่ายมากกว่า 0 บาท'); return; }
+    if (!pendingPayImg){
+      alert('บังคับแนบสลิป: กรุณาเลือกรูปสลิปก่อนกดบันทึกครับ');
+      $('paySlip').focus();
+      return;
+    }
+    addPay(pendingPayUserId, n, pendingPayImg);
+    openDetails.add(pendingPayUserId);
+    closePayModal();
+    render();
+    save();
+  });
+
+  $('syncBtn').addEventListener('click', () => { setStatus('กำลังซิงก์ข้อมูลล่าสุด...'); pull(true); });
+  $('soundBtn').addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    $('soundBtn').textContent = soundEnabled ? '🔔 เสียงเตือน: เปิด' : '🔕 เสียงเตือน: ปิด';
+  });
+  $('rent').addEventListener('input', e => {
+    const v = Math.max(0, Number(e.target.value)||0);
+    state.rents[state.term] = v; state.rent = v;
+    render();
+    save();
+  });
+  $('termSel').addEventListener('change', e => gotoTerm(e.target.value));
+  $('prev').addEventListener('click', () => shift(-1));
+  $('next').addEventListener('click', () => shift(1));
+  $('list').addEventListener('toggle', e => {
+    const id = e.target.dataset && e.target.dataset.id;
+    if (id) e.target.open ? openDetails.add(id) : openDetails.delete(id);
+  }, true);
+  $('list').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const id = b.dataset.id, p = state.people.find(x => x.id === id);
+    if (!p) return;
+    if (b.dataset.a === 'del'){
+      if (confirm('ลบ "' + p.name + '" ออกจากรายชื่อ (ลบประวัติทุกเทอมของคนนี้ด้วย)?')){
+        state.people = state.people.filter(x => x.id !== id);
+        Object.values(state.pay || {}).forEach(m => { if (m && typeof m === 'object') delete m[id]; });
+        render();
+        save();
+      }
+    } else if (b.dataset.a === 'rm'){
+      const k = Number(b.dataset.k), x = pays(id)[k];
+      if (x && confirm('ลบรายการจ่าย ' + fmt(x.a) + ' บาท ของ ' + p.name + '?')){
+        state.pay[state.term][id].splice(k, 1);
+        render();
+        save();
+      }
+    } else if (b.dataset.a === 'pay'){
+      openPayModal(id);
+    }
+  });
+  $('reset').addEventListener('click', () => {
+    if (confirm('ล้างยอดการจ่ายของเทอมนี้ทั้งหมด? (รายชื่อและเทอมอื่นไม่หาย)')){
+      delete state.pay[state.term];
+      render();
+      save();
+    }
+  });
+
+  let savedPref = null;
+  try { savedPref = JSON.parse(localStorage.getItem(UI_PREF_KEY) || 'null'); } catch(e){}
+  applyUIPrefs(savedPref || { theme: 'auto', layout: 'comfortable' });
+  initPWA();
+  load();
+  render();
+  if (DB_URL){
+    pull(true).then(() => startRealtimeStream());
+    setInterval(() => pull(false), 3000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(true); });
+    window.addEventListener('focus', () => pull(true));
+  } else {
+    setStatus('ยังไม่ได้ตั้งค่าออนไลน์ ข้อมูลเก็บในเครื่องนี้เท่านั้น');
+  }
+})();
+</script>
+</body>
+</html>
